@@ -1700,3 +1700,8 @@ git push origin feature/your-task-name
 • Open a Pull Request.
 
 Built with ❤️ on Stellar
+
+## Handsoff notes
+
+<!-- handsoff-issue-538 -->
+- #538: [Contracts] Add proposal cancellation decrementing the active-proposal counter
