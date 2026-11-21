@@ -1705,3 +1705,6 @@ Built with ❤️ on Stellar
 
 <!-- handsoff-issue-538 -->
 - #538: [Contracts] Add proposal cancellation decrementing the active-proposal counter
+
+<!-- handsoff-issue-540 -->
+- #540: [Contracts] Add a reentrancy guard to execute and parameter-change overrides
