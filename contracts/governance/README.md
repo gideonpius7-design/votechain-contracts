@@ -1,23 +1,54 @@
 # Governance Contract
 
-## Overview
-
 The governance contract manages proposals, voting, and execution for the protocol.
 
-## Configuration
+## Overview
 
-### `max_active_proposals`
+- **Admin**: privileged account that can update configuration.
+- **Token**: governance token used for voting power.
+- **Durations**: voting period, execution delay, and related timing parameters.
+- **Cooldown**: minimum time between proposal actions.
+- **Timelock**: delay before an approved proposal can be executed.
+- **Caps**: maximum proposal/voting limits.
+- **Quorum floor**: minimum participation required for a vote to be valid.
+- **Version**: contract version identifier.
 
-The maximum number of proposals that may be active at the same time.
+## Read Functions
 
-- **Default:** `50`
-- **Behavior:** `initialize` only persists `max_active_proposals` when the provided value is greater than `0`. If the value is unset (or `0`), `get_max_active_proposals` returns the default of `50`.
-- **Enforcement:** Once the number of active proposals reaches the cap, creating another proposal fails. With the default in effect, the 51st concurrent proposal is rejected.
+### `get_config`
 
-## Reference
+Returns the full current configuration in a single call so indexers and
+frontends can render parameters without issuing N separate reads.
 
-| Function | Description |
-| --- | --- |
-| `initialize` | Sets up the contract. Stores `max_active_proposals` only when `> 0`. |
-| `get_max_active_proposals` | Returns the configured cap, or `50` when unset. |
-| `create_proposal` | Creates a proposal; fails when the active-proposal cap is reached. |
+```rust
+pub struct Config {
+    pub admin: Address,
+    pub token: Address,
+    pub voting_period: u64,
+    pub execution_delay: u64,
+    pub cooldown: u64,
+    pub timelock: u64,
+    pub proposal_cap: u32,
+    pub voting_cap: u32,
+    pub quorum_floor: u32,
+    pub version: u32,
+}
+
+pub fn get_config(env: Env) -> Config;
+```
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `admin` | `Address` | Current admin account. |
+| `token` | `Address` | Governance token contract address. |
+| `voting_period` | `u64` | Length of the voting window. |
+| `execution_delay` | `u64` | Delay before execution after approval. |
+| `cooldown` | `u64` | Minimum time between proposal actions. |
+| `timelock` | `u64` | Timelock duration for approved proposals. |
+| `proposal_cap` | `u32` | Maximum number of active proposals. |
+| `voting_cap` | `u32` | Maximum voting weight per account. |
+| `quorum_floor` | `u32` | Minimum participation for a valid vote. |
+| `version` | `u32` | Contract version identifier. |
+
+All values returned by `get_config` reflect the parameters supplied to
+`initialize` (or the latest values set by the admin).
